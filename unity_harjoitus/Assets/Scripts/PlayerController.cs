@@ -6,7 +6,9 @@ public class PlayerController : MonoBehaviour
 {
     public CharacterController CharacterController;
     string text = "tähän tulee tekstiä";
-    public float movespeed = 5;
+    public float movespeed = 50;
+    public float maxAngle = 70f;
+    public float minAngle = -70f;
     public float mouseSpeed = 5;
     double a = 5.55;
     float f = 5f;
@@ -25,12 +27,15 @@ public class PlayerController : MonoBehaviour
     {
 
         mouseHorizontal += Input.GetAxis("Mouse X") * mouseSpeed;
-        mouseVertical += Input.GetAxis("Mouse Y") * mouseSpeed;
-        Camera.main.transform.localRotation = Quaternion.Euler(mouseHorizontal,mouseVertical,0);
+        mouseVertical -= Input.GetAxis("Mouse Y") * mouseSpeed;
+        mouseVertical = Mathf.Clamp(mouseVertical,minAngle,maxAngle);
+        Camera.main.transform.localRotation = Quaternion.Euler(mouseVertical,mouseHorizontal,0);
 
         float forwardMove = Input.GetAxis("Vertical");
         float sideMove = Input.GetAxis("Horizontal");
         Vector3 direction = new Vector3(sideMove,0,forwardMove);
+        direction = Camera.main.transform.rotation * direction; 
         CharacterController.SimpleMove(direction * Time.deltaTime * movespeed);
     }
 }
+//slope limitillä voit vaihtaa kuinka jyrkkää mäkeä pääset
